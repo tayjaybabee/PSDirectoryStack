@@ -1,5 +1,0 @@
-run = ["pash", "main.ps1"]
-
-hidden = ['.config']
-[nix]
-channel = "stable-21_11"
