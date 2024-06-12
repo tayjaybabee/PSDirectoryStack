@@ -33,7 +33,7 @@
 
 1. Clone the repository to your local machine:
     ```sh
-    git clone https://github.com/yourusername/PSDirectoryStack.git
+    git clone https://github.com/tayjaybabee/PSDirectoryStack.git
     ```
 
 2. Import the module in your PowerShell profile:
