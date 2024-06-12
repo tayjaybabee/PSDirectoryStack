@@ -3,7 +3,7 @@
     RootModule        = 'PSDirectoryStack.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.1.1'
+    ModuleVersion     = '1.1.3'
 
     # ID used to uniquely identify this module
     GUID              = '0f8029c1-4dd2-4e1f-aa49-81a7b90c982c'

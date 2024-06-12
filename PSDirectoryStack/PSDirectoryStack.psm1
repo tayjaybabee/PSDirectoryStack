@@ -61,6 +61,10 @@ function Set-LocationEnhanced {
         return
     }
 
+    if (-not $Path) {
+        $Path = [Environment]::GetFolderPath('UserProfile')
+    }
+
     # Ensure the path is resolved correctly
     $resolvedPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
 
