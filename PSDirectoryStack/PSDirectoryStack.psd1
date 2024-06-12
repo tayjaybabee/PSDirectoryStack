@@ -3,7 +3,7 @@
     RootModule        = 'PSDirectoryStack.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.1.3'
+    ModuleVersion     = '1.2.0'
 
     # ID used to uniquely identify this module
     GUID              = '0f8029c1-4dd2-4e1f-aa49-81a7b90c982c'
@@ -18,7 +18,14 @@
     Description       = 'A PowerShell module to manage a directory stack like Linux'
 
     # Functions to export from this module
-    FunctionsToExport = @('Push-Location', 'Pop-Location', 'Switch-Location', 'Set-LocationEnhanced', 'Update-UserProfileForEnhancedLocationModule')
+    FunctionsToExport = @(
+        'Push-Location',
+        'Pop-Location',
+        'Switch-Location',
+        'Set-LocationEnhanced',
+        'Update-UserProfileForPSDirectoryStackModule',
+        'Get-PSDirectoryStackVersion'
+        )
 
     # Cmdlets to export from this module
     CmdletsToExport   = @()

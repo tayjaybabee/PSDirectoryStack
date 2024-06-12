@@ -3,6 +3,19 @@ if (-not (Get-Variable -Name DirectoryStack -Scope Global -ErrorAction SilentlyC
     Set-Variable -Name DirectoryStack -Value @() -Scope Global
 }
 
+
+function Set-DebugMode {
+    param (
+        [switch]$EnableDebug
+    )
+    if ($EnableDebug) {
+        $global:DebugPreference = 'Continue'
+
+    }
+    
+}
+
+
 function Push-Location {
     param(
         [string]$Path
@@ -92,7 +105,7 @@ function Set-LocationEnhanced {
 }
 
 
-function Update-UserProfileForEnhancedLocationModule {
+function Update-UserProfileForPSDirectoryStack {
     param (
         [Alias('h')]
         [switch]$Help,
@@ -100,27 +113,25 @@ function Update-UserProfileForEnhancedLocationModule {
         [switch]$Debug
     )
 
-    if ($Debug) {
-        $DebugPreference = 'Continue'
-    }
+    Set-DebugMode -EnableDebug:$Debug
 
-    Write-Debug "Starting Update-UserProfileForEnhancedLocationModule"
+    Write-Debug "Starting Update-UserProfileForPSDirectoryStack"
 
     # Manually check for --help argument in the invocation line
     $invocation = $PSCmdlet.MyInvocation
     if ($Help -or $invocation.Line -like "*--help*") {
         @"
 NAME
-    Update-UserProfileForEnhancedLocationModule
+    Update-UserProfileForPSDirectoryStack
 
 SYNOPSIS
-    Updates the user's PowerShell profile to import the EnhancedLocationModule and set aliases.
+    Updates the user's PowerShell profile to import the PSDirectoryStack and set aliases.
 
 SYNTAX
-    Update-UserProfileForEnhancedLocationModule [-Help]
+    Update-UserProfileForPSDirectoryStack [-Help]
 
 DESCRIPTION
-    This function dynamically determines the path to the EnhancedLocationModule's .psm1 file, 
+    This function dynamically determines the path to the PSDirectoryStack's .psm1 file, 
     updates the user's PowerShell profile to import the module, and sets aliases for enhanced 
     location handling. It then reloads the profile to apply the changes immediately.
 
@@ -129,7 +140,7 @@ PARAMETERS
         Displays this help message.
 
 EXAMPLES
-    PS> Update-UserProfileForEnhancedLocationModule
+    PS> Update-UserProfileForPSDirectoryStack
     Updates the user's profile with the module import and alias commands, then reloads the profile.
 
 NOTES
@@ -148,7 +159,7 @@ NOTES
     # Content to add to the profile script
     $profileContentToAdd = @"
 
-# Import the EnhancedLocationModule module
+# Import the PSDirectoryStack module
 Import-Module -Name PSDirectoryStack
 
 # Create an alias for 'cd' to use Set-LocationEnhanced
@@ -197,4 +208,82 @@ Set-Alias -Name switchd -Value Switch-Location -Option AllScope
 }
 
 # Example usage:
-# Update-UserProfileForEnhancedLocationModule
+# Update-UserProfileForPSDirectoryStack
+
+
+function Get-PSDirectoryStackVersion {
+    param (
+        [Alias('h')]
+        [switch]$Help,
+        [Alias('D')]
+        [switch]$Debug
+    )
+
+    if ($Debug) {
+        Set-DebugMode -EnableDebug:$Debug
+    }
+
+    Write-Debug "Starting Get-PSDirectoryStackVersion"
+
+    # Manually check for --help argument in the invocation line
+    $invocation = $PSCmdlet.MyInvocation
+    if ($Help -or $invocation.Line -like "*--help*") {
+        @"
+NAME
+    Get-PSDirectoryStackVersion
+
+SYNOPSIS
+    Displays the version information of the PSDirectoryStack.
+
+SYNTAX
+    Get-PSDirectoryStackVersion [-Help] [-Debug]
+
+DESCRIPTION
+    This function reads the version information from the PSDirectoryStack's manifest file 
+    (PSDirectoryStack.psd1) and displays it.
+
+PARAMETERS
+    -Help
+        Displays this help message.
+
+    -Debug
+        Enables debug messages.
+
+EXAMPLES
+    PS> Get-PSDirectoryStackVersion
+    Displays the version information of the PSDirectoryStack.
+
+    PS> Get-PSDirectoryStackVersion -Debug
+    Displays debug messages along with the version information.
+
+NOTES
+    Author: T. Blackstone
+    Company: Inspyre-Softworks
+    This function is part of the PSDirectoryStack module.
+"@
+        return
+    }
+
+    try {
+        Write-Debug "Looking for the module manifest file (PSDirectoryStack.psd1)"
+        $manifestPath = Join-Path -Path $PSScriptRoot -ChildPath 'PSDirectoryStack.psd1'
+        
+        if (-not (Test-Path -Path $manifestPath)) {
+            throw "Module manifest file not found."
+        }
+
+        Write-Debug "Importing manifest file from $manifestPath"
+        $manifest = Import-PowerShellDataFile -Path $manifestPath
+        $moduleVersion = $manifest.ModuleVersion
+
+        Write-Host "PSDirectoryStack version $moduleVersion"
+    } catch {
+        Write-Error "Unable to read version information: $_"
+    }
+}
+
+# Example usage:
+# Get-PSDirectoryStackVersion
+# Get-PSDirectoryStackVersion -Debug
+# Get-PSDirectoryStackVersion -Help
+
